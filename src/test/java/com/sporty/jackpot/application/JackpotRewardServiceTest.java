@@ -85,7 +85,7 @@ class JackpotRewardServiceTest {
         rewardService.evaluateReward(BET_ID);
 
         assertThat(rewardRepository.count()).isEqualTo(1);
-        var reward = rewardRepository.findAll().getFirst();
+        var reward = rewardRepository.findAll().get(0);
         assertThat(reward.getBetId()).isEqualTo(BET_ID);
         assertThat(reward.getJackpotRewardAmount()).isEqualByComparingTo("2000.00");
     }

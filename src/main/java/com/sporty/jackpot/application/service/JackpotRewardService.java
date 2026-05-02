@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -25,6 +27,11 @@ public class JackpotRewardService {
 
     @Transactional
     public RewardResponse evaluateReward(String betId) {
+        Optional<RewardResponse> existingReward = findExistingReward(betId);
+        if (existingReward.isPresent()) {
+            return existingReward.get();
+        }
+
         JackpotContributionEntity contribution = contributionRepository.findByBetId(betId)
                 .orElseThrow(() -> new IllegalArgumentException("No contribution found for betId: " + betId));
 
@@ -70,5 +77,18 @@ public class JackpotRewardService {
                 jackpotEntity.getJackpotId(),
                 rewardAmount
         );
+    }
+
+    private Optional<RewardResponse> findExistingReward(String betId) {
+        return rewardRepository.findByBetId(betId)
+                .map(reward -> {
+                    log.info("Bet {} was already evaluated and won. Returning existing reward.", betId);
+                    return RewardResponse.win(
+                            reward.getBetId(),
+                            reward.getUserId(),
+                            reward.getJackpotId(),
+                            reward.getJackpotRewardAmount()
+                    );
+                });
     }
 }
