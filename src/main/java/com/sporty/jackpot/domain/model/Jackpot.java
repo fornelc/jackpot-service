@@ -17,11 +17,12 @@ public class Jackpot {
 
     public Jackpot(String jackpotId,
                    BigDecimal initialPoolAmount,
+                   BigDecimal currentPoolAmount,
                    ContributionStrategy contributionStrategy,
                    RewardStrategy rewardStrategy) {
         this.jackpotId = jackpotId;
         this.initialPoolAmount = initialPoolAmount;
-        this.poolAmount = initialPoolAmount;
+        this.poolAmount = currentPoolAmount;
         this.contributionStrategy = contributionStrategy;
         this.rewardStrategy = rewardStrategy;
     }
@@ -38,13 +39,5 @@ public class Jackpot {
 
     public void reset() {
         this.poolAmount = initialPoolAmount;
-    }
-
-    /**
-     * Restores the pool amount from persistence.
-     * Used only when rehydrating a Jackpot from the database.
-     */
-    public void restorePool(java.math.BigDecimal persistedPool) {
-        this.poolAmount = persistedPool;
     }
 }

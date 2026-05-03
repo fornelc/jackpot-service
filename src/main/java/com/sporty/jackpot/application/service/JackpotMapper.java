@@ -25,26 +25,12 @@ public class JackpotMapper {
             case VARIABLE -> new VariableRewardStrategy(entity.getRewardPoolLimit());
         };
 
-        Jackpot jackpot = new Jackpot(
+        return new Jackpot(
                 entity.getJackpotId(),
                 entity.getInitialPoolAmount(),
+                entity.getPoolAmount(),
                 contributionStrategy,
                 rewardStrategy
         );
-
-        // Restore current pool state
-        if (entity.getPoolAmount().compareTo(entity.getInitialPoolAmount()) != 0) {
-            // Sync pool from persistence — we do this by direct field reflection substitute:
-            // pool is set via contribute() normally, but here we restore from DB
-            restorePool(jackpot, entity);
-        }
-
-        return jackpot;
-    }
-
-    private void restorePool(Jackpot jackpot, JackpotEntity entity) {
-        // Since poolAmount is set by contribute(), we restore it directly here
-        // by using a package-level trick or a dedicated restore method
-        jackpot.restorePool(entity.getPoolAmount());
     }
 }

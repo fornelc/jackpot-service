@@ -51,6 +51,7 @@ class JackpotTest {
         return new Jackpot(
                 "test-jackpot",
                 new BigDecimal(initialPool),
+                new BigDecimal(initialPool),
                 new FixedContributionStrategy(new BigDecimal("5.0")),
                 new FixedRewardStrategy(new BigDecimal("10.0"), random)
         );
